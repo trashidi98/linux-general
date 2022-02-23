@@ -2,6 +2,8 @@
 
 This guide may not be entirely clear, I've installed Linux mutliple times now, so I can find my way around some common issues. This is not a dual boot guide for existing windows systems, though there are great guides online that can guide you through an installation. This guide is more geared towards a fresh install which is what I find myself doing nowadays. 
 
+Wanna know how to do Linux on UEFI boot by following a longer more thorough guide? https://www.rodsbooks.com/linux-uefi/
+
 ## Starting with the Hardrives 
 
 You probably have some drives that you're going to install linux on, most will want to do a windows and linux system. In that case there are a couple of concepts to understand 
@@ -31,6 +33,8 @@ To prepare the harddrives for installation in UEFI mode, you probably should hav
 
 1) Boot a live linux USB - I choose Ubuntu or LinuxMint for simplicity of troubleshooting and a vast amount of Googleable questions (sue me)
 
+  - NOTE you must BOOT your USB in the style that you want to install to drive i.e. if you want a UEFI Linux boot, then boot the USB from UEFI mode in the motherboard, otherwise boot from Legacy/BIOS
+
 2) Use Gparted to delete some of the partitions on the desired drive
 
   - I remember reading somewhere that a drive cannot be GPT partitioned if 3 or more partitions exist. If so delete the necessary partitions. 
@@ -45,9 +49,37 @@ To prepare the harddrives for installation in UEFI mode, you probably should hav
 
 A good guide on MBR to GPT: https://www.cpqlinux.com/convert-disk-mbr-to-gpt-on-linux/ or https://serverfault.com/questions/963178/how-do-i-convert-my-linux-disk-from-mbr-to-gpt-with-uefi
 
+
 4) Assuming you've partitioned your drives you can set the file system type 
 
 ```
 sudo mkfs.ntfs /dev/sda OR sudo mkfs.ext4 /dev/sda
 ```
+
+5) Okay so the drives are set up properly now onto the installation. If you've converted your desired windows drive to GPT and are happy with the size, go ahead and install Windows on it. The rest of the guide is for linux only. At this point your drive is essentially split into a Windows GPT drive with NTFS file system. And a GPT drive for linux.  
+
+6) What to do with the space we've allocated for linux? Here's the recommendation when you're in the linux installer for Gparted
+
+MAJORITY: Space for actual OS installation and local linux files 
+FORMAT: Ext4
+
+SWAPSPACE (OPITIONAL but RECOMMENDED): Which as a rule of thumb can be from half the size of your RAM to double the size of your RAM 
+FORMAT: linux-swap/swap
+
+information on swap: https://help.ubuntu.com/community/SwapFaq
+
+EFI (ESP) SYSTEM PARTITION: UEFI needs this to boot the drive; I would recommend 256 MB+
+FORMAT: FAT32
+
+7) The installer will also ask you where it should keep the bootloader somewhere (I forget where in the installation) the answer is '/' and ON the harddrive that you are installing the Linux installation to, the WHOLE hardrive not a particular partition. This is where the GRUB menu sits. 
+
+
+8) Some issues with GRUB and their solutions
+
+GRUB menu dissapears: https://medium.com/@leijerry888/get-grub-menu-back-after-installing-ubuntu-20-04-alongside-windows-dab5de5afc37
+
+Get a more modern GRUB menu: https://linuxmint-user-guide.readthedocs.io/en/latest/grub.html
+
+
+
 
